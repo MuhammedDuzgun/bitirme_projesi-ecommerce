@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Entity
+@Table(name = "orders")
 public class Order {
 
     @Id
@@ -46,10 +47,10 @@ public class Order {
 
     private OrderStatus orderStatus;
 
+    //@Column(insertable=false, updatable=false)
     private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
-    @CreationTimestamp
-    private LocalDateTime orderDate;
+    private LocalDateTime orderDate = LocalDateTime.now();
 
     private LocalDateTime deliverDate = orderDate.plusDays(7);
 

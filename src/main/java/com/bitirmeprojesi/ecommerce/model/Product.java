@@ -12,7 +12,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Entity
 public class Product {
 
@@ -35,7 +34,7 @@ public class Product {
     private String color;
 
     @ElementCollection
-    private List<String> images = new ArrayList<String>();
+    private List<String> images = new ArrayList<>();
 
     private int numRatings;
 
