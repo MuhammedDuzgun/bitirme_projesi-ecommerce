@@ -4,6 +4,7 @@ import com.bitirmeprojesi.ecommerce.domain.USER_ROLE;
 import com.bitirmeprojesi.ecommerce.model.User;
 import com.bitirmeprojesi.ecommerce.model.VerificationCode;
 import com.bitirmeprojesi.ecommerce.repository.IUserRepository;
+import com.bitirmeprojesi.ecommerce.request.LoginOtpRequest;
 import com.bitirmeprojesi.ecommerce.request.LoginRequest;
 import com.bitirmeprojesi.ecommerce.response.ApiResponse;
 import com.bitirmeprojesi.ecommerce.response.AuthResponse;
@@ -37,8 +38,8 @@ public class AuthController {
     }
 
     @PostMapping("/send-otp")
-    public ResponseEntity<ApiResponse> sendOtp(@RequestBody VerificationCode request) {
-        authService.sendLoginOtp(request.getEmail());
+    public ResponseEntity<ApiResponse> sendOtp(@RequestBody LoginOtpRequest request) {
+        authService.sendLoginOtp(request.getEmail(), request.getRole());
 
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setMessage("send otp success");

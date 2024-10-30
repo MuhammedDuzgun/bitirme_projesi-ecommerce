@@ -27,7 +27,8 @@ public class AppConfig {
                         SessionCreationPolicy.STATELESS
                 )).authorizeRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/sellers/**").permitAll()
+                        //.requestMatchers("/api/**").authenticated()
                         .requestMatchers("/api/products/*/reviews").permitAll()
                         .anyRequest().permitAll()
                 ).addFilterBefore(

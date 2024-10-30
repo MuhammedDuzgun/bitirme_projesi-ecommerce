@@ -3,9 +3,11 @@ package com.bitirmeprojesi.ecommerce.service.impl;
 import com.bitirmeprojesi.ecommerce.config.JwtProvider;
 import com.bitirmeprojesi.ecommerce.domain.USER_ROLE;
 import com.bitirmeprojesi.ecommerce.model.Cart;
+import com.bitirmeprojesi.ecommerce.model.Seller;
 import com.bitirmeprojesi.ecommerce.model.User;
 import com.bitirmeprojesi.ecommerce.model.VerificationCode;
 import com.bitirmeprojesi.ecommerce.repository.ICartRepository;
+import com.bitirmeprojesi.ecommerce.repository.ISellerRepository;
 import com.bitirmeprojesi.ecommerce.repository.IUserRepository;
 import com.bitirmeprojesi.ecommerce.repository.VerificationCodeRepository;
 import com.bitirmeprojesi.ecommerce.request.LoginRequest;
@@ -36,6 +38,7 @@ import java.util.List;
 public class AuthService implements IAuthService {
 
     private final IUserRepository userRepository;
+    private final ISellerRepository sellerRepository;
     private final PasswordEncoder passwordEncoder;
     private final ICartRepository cartRepository;
     private final VerificationCodeRepository verificationCodeRepository;
@@ -44,16 +47,25 @@ public class AuthService implements IAuthService {
     private final JwtProvider jwtProvider;
 
     @Override
-    public void sendLoginOtp(String email) {
+    public void sendLoginOtp(String email, USER_ROLE role) {
         String SIGNING_PREFIX = "signing_";
+
         if (email.startsWith(SIGNING_PREFIX)) {
             email = email.substring(SIGNING_PREFIX.length());
 
-            User user = userRepository.findByEmail(email);
-            if (user == null) {
-                throw new UsernameNotFoundException("User not found with email: " + email);
+            if (role.equals(USER_ROLE.ROLE_CUSTOMER)) {
+                User user = userRepository.findByEmail(email);
+                if (user == null) {
+                    throw new UsernameNotFoundException("User not found with email: " + email);
+                }
+            } else {
+                Seller seller = sellerRepository.findByEmail(email);
+                if (seller == null) {
+                    throw new UsernameNotFoundException("Seller not found with email: " + email);
+                }
             }
         }
+
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(email);
         if (verificationCode != null) {
             verificationCodeRepository.delete(verificationCode);
@@ -131,6 +143,12 @@ public class AuthService implements IAuthService {
 
     private Authentication authenticate(String username, String otp) {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+
+        String SELLER_PREFIX = "seller_";
+        if (username.startsWith(SELLER_PREFIX)) {
+            username = username.substring(SELLER_PREFIX.length());
+        }
+
         if (userDetails == null) {
             throw new BadCredentialsException("Username or password is incorrect");
         }
