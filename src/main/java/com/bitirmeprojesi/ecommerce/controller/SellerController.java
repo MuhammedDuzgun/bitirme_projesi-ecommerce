@@ -2,6 +2,7 @@ package com.bitirmeprojesi.ecommerce.controller;
 
 import com.bitirmeprojesi.ecommerce.config.JwtProvider;
 import com.bitirmeprojesi.ecommerce.domain.AccountStatus;
+import com.bitirmeprojesi.ecommerce.exception.SellerException;
 import com.bitirmeprojesi.ecommerce.model.Seller;
 import com.bitirmeprojesi.ecommerce.model.SellerReport;
 import com.bitirmeprojesi.ecommerce.model.VerificationCode;
@@ -80,7 +81,7 @@ public class SellerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Seller> getSellerById(@PathVariable("id") Long id) {
+    public ResponseEntity<Seller> getSellerById(@PathVariable("id") Long id) throws SellerException {
         Seller seller = sellerService.getSellerById(id);
         return ResponseEntity.ok(seller);
     }
@@ -113,7 +114,7 @@ public class SellerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSeller(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteSeller(@PathVariable("id") Long id) throws SellerException {
         sellerService.deleteSeller(id);
         return ResponseEntity.noContent().build();
     }

@@ -3,6 +3,7 @@ package com.bitirmeprojesi.ecommerce.service.impl;
 import com.bitirmeprojesi.ecommerce.config.JwtProvider;
 import com.bitirmeprojesi.ecommerce.domain.AccountStatus;
 import com.bitirmeprojesi.ecommerce.domain.USER_ROLE;
+import com.bitirmeprojesi.ecommerce.exception.SellerException;
 import com.bitirmeprojesi.ecommerce.model.Address;
 import com.bitirmeprojesi.ecommerce.model.Seller;
 import com.bitirmeprojesi.ecommerce.repository.IAddressRepository;
@@ -53,9 +54,9 @@ public class SellerService implements ISellerService {
     }
 
     @Override
-    public Seller getSellerById(Long id) {
+    public Seller getSellerById(Long id) throws SellerException {
         return sellerRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("seller not found"));
+                .orElseThrow(()-> new SellerException("seller not found"));
     }
 
     @Override
@@ -124,7 +125,7 @@ public class SellerService implements ISellerService {
     }
 
     @Override
-    public void deleteSeller(Long id) {
+    public void deleteSeller(Long id) throws SellerException {
         Seller Seller = getSellerById(id);
         sellerRepository.delete(Seller);
     }
@@ -137,7 +138,7 @@ public class SellerService implements ISellerService {
     }
 
     @Override
-    public Seller updateSellerAccountStatus(Long sellerId, AccountStatus accountStatus) {
+    public Seller updateSellerAccountStatus(Long sellerId, AccountStatus accountStatus) throws SellerException {
         Seller seller = getSellerById(sellerId);
         seller.setAccountStatus(accountStatus);
         return sellerRepository.save(seller);
