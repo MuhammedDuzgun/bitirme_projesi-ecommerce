@@ -103,12 +103,12 @@ public class AuthService implements IAuthService {
             createUser.setPhone("12345");
             createUser.setPassword(passwordEncoder.encode(request.getOtp()));
 
+            user = userRepository.save(createUser);
+
             //create cart
             Cart cart = new Cart();
             cart.setUser(user);
             cartRepository.save(cart);
-
-            user = userRepository.save(createUser);
         }
 
         List<GrantedAuthority> authorities = new ArrayList<>();
