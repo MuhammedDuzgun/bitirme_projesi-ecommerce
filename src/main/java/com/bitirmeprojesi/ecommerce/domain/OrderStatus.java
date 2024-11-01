@@ -1,4 +1,4 @@
-package com.bitirmeprojesi.ecommerce.model;
+package com.bitirmeprojesi.ecommerce.domain;
 
 public enum OrderStatus {
 

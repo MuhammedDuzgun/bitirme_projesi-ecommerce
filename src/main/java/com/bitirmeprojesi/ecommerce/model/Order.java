@@ -1,8 +1,8 @@
 package com.bitirmeprojesi.ecommerce.model;
 
+import com.bitirmeprojesi.ecommerce.domain.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
