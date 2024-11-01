@@ -11,6 +11,7 @@ import com.bitirmeprojesi.ecommerce.request.LoginRequest;
 import com.bitirmeprojesi.ecommerce.response.ApiResponse;
 import com.bitirmeprojesi.ecommerce.response.AuthResponse;
 import com.bitirmeprojesi.ecommerce.service.EmailService;
+import com.bitirmeprojesi.ecommerce.service.ISellerReportService;
 import com.bitirmeprojesi.ecommerce.service.ISellerService;
 import com.bitirmeprojesi.ecommerce.service.impl.AuthService;
 import com.bitirmeprojesi.ecommerce.utils.OtpUtil;
@@ -27,6 +28,7 @@ import java.util.List;
 public class SellerController {
 
     private final ISellerService sellerService;
+    private final ISellerReportService sellerReportService;
     private final VerificationCodeRepository verificationCodeRepository;
     private final AuthService authService;
     private final EmailService emailService;
@@ -92,13 +94,12 @@ public class SellerController {
         return new ResponseEntity<>(seller, HttpStatus.OK);
     }
 
-//    @GetMapping("/report")
-//    public ResponseEntity<SellerReport> getSellerReport(@RequestHeader("Authorization") String jwt) {
-//        String email = jwtProvider.getEmailFromJwtToken(jwt);
-//        Seller seller = sellerService.getSellerByEmail(email);
-//        SellerReport sellerReport = sellerReportService.getSellerReport(seller);
-//        return new ResponseEntity<>(sellerReport, HttpStatus.OK);
-//    }
+    @GetMapping("/report")
+    public ResponseEntity<SellerReport> getSellerReport(@RequestHeader("Authorization") String jwt) {
+        Seller seller = sellerService.getSellerProfile(jwt);
+        SellerReport sellerReport = sellerReportService.getSellerReport(seller);
+        return new ResponseEntity<>(sellerReport, HttpStatus.OK);
+    }
 
     @GetMapping("/get-all-sellers")
     public ResponseEntity<List<Seller>> getAllSellers(@RequestParam(required = false) AccountStatus status) {
