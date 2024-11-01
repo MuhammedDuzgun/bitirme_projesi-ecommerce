@@ -3,9 +3,12 @@ package com.bitirmeprojesi.ecommerce.controller;
 import com.bitirmeprojesi.ecommerce.domain.PaymentMethod;
 import com.bitirmeprojesi.ecommerce.exception.SellerException;
 import com.bitirmeprojesi.ecommerce.model.*;
+import com.bitirmeprojesi.ecommerce.repository.IPaymentOrderRepository;
 import com.bitirmeprojesi.ecommerce.response.PaymentLinkResponse;
 import com.bitirmeprojesi.ecommerce.service.*;
 import com.bitirmeprojesi.ecommerce.service.impl.SellerService;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentLink;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -24,37 +27,39 @@ public class OrderController {
     private final ICartService cartService;
     private final ISellerService sellerService;
     private final ISellerReportService sellerReportService;
+    private final IPaymentService paymentService;
+    private final IPaymentOrderRepository paymentOrderRepository;
 
 
 
     @PostMapping
     public ResponseEntity<PaymentLinkResponse> createOrder(@RequestHeader("Authorization") String jwt,
                                                            @RequestParam PaymentMethod paymentMethod,
-                                                           @RequestBody Address shippingAddress) {
+                                                           @RequestBody Address shippingAddress) throws StripeException {
 
         User user = userService.findUserByJwtToken(jwt);
         Cart cart = cartService.findUserCart(user);
 
         Set<Order> orders = orderService.createOrder(user, shippingAddress, cart);
 
-        //PaymentOrder paymentOrder = paymentService.createOrder(user, orders);
+        PaymentOrder paymentOrder = paymentService.createOrder(user, orders);
 
         PaymentLinkResponse response = new PaymentLinkResponse();
 
-//        if (paymentMethod.equals(PaymentMethod.RAZORPAY)) {
-//            paymentService.createRazorpayPaymentLink(user, paymentOrder.getAmount(), paymentOrder.getId());
+        if (paymentMethod.equals(PaymentMethod.RAZORPAY)) {
+//            PaymentLink payment = paymentService.createRazorpayPaymentLink(user, paymentOrder.getAmount(), paymentOrder.getId());
 //            String paymentUrl = payment.get("short_url");
 //            String paymentUrlId = payment.get("id");
-//
+
 //            response.setPayment_link_url(paymentUrl);
 //
 //            paymentOrder.setPaymentLinkId(paymentUrlId);
 //
 //            paymentOrderRepository.save(paymentOrder);
-//        } else {
-//            String paymentUrl = paymentService.createStripePaymentLink(user, paymentOrder.getAmount(), paymentOrder.getId());
-//            response.setPayment_link_url(paymentUrl);
-//        }
+        } else {
+            String paymentUrl = paymentService.createStripePaymentLink(user, paymentOrder.getAmount(), paymentOrder.getId());
+            response.setPayment_link_url(paymentUrl);
+        }
 
         return ResponseEntity.ok(response);
     }
