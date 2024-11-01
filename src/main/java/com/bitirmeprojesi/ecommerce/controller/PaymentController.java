@@ -4,10 +4,7 @@ import com.bitirmeprojesi.ecommerce.exception.SellerException;
 import com.bitirmeprojesi.ecommerce.model.*;
 import com.bitirmeprojesi.ecommerce.response.ApiResponse;
 import com.bitirmeprojesi.ecommerce.response.PaymentLinkResponse;
-import com.bitirmeprojesi.ecommerce.service.IPaymentService;
-import com.bitirmeprojesi.ecommerce.service.ISellerReportService;
-import com.bitirmeprojesi.ecommerce.service.ISellerService;
-import com.bitirmeprojesi.ecommerce.service.IUserService;
+import com.bitirmeprojesi.ecommerce.service.*;
 
 
 import lombok.AllArgsConstructor;
@@ -24,6 +21,7 @@ public class PaymentController {
     private final IUserService userService;
     private final ISellerService sellerService;
     private final ISellerReportService sellerReportService;
+    private final ITransactionService transactionService;
 
     @GetMapping("/{paymentId}")
     public ResponseEntity<ApiResponse> paymentSuccess(@RequestHeader("Authorization") String jwt,
@@ -39,7 +37,7 @@ public class PaymentController {
 
         if (paymentSuccess) {
             for (Order order : paymentOrder.getOrders()) {
-                //transactionService.createTransaction(order);
+                transactionService.createTransaction(order);
                 Seller seller = sellerService.getSellerById(order.getSellerId());
                 SellerReport report = sellerReportService.getSellerReport(seller);
                 report.setTotalOrders(report.getTotalOrders() + 1);
