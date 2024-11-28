@@ -65,6 +65,7 @@ public class CartController {
     public ResponseEntity<CartItem> updateCartItem(@RequestHeader("Authorization") String jwt,
                                                    @PathVariable("cartItemId") Long cartItemId,
                                                    @RequestBody CartItem cartItem) {
+
         User user = userService.findUserByJwtToken(jwt);
 
         CartItem updatedCartItem = null;
