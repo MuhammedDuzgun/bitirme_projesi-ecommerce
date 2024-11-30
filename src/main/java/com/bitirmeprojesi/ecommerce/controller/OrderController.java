@@ -6,9 +6,7 @@ import com.bitirmeprojesi.ecommerce.model.*;
 import com.bitirmeprojesi.ecommerce.repository.IPaymentOrderRepository;
 import com.bitirmeprojesi.ecommerce.response.PaymentLinkResponse;
 import com.bitirmeprojesi.ecommerce.service.*;
-import com.bitirmeprojesi.ecommerce.service.impl.SellerService;
 import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentLink;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
